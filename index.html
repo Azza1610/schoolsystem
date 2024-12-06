@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body>
+    <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href="/"
+                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <svg class="bi me-2" width="40" height="32">
+                    <use xlink:href="#bootstrap" />
+                </svg>
+                <span class="fs-4">Student Management System</span>
+            </a>
+        </header>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-auto">
+
+                <div class="card py-3" style="width: 18rem;">
+                    <h5 class="card-title">Login</h5>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="userName" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="userName" placeholder="Username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="passWord" class="form-label">Password</label>
+                                <input type="Password" class="form-control" id="passWord" required>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" onclick="submitLogin()"
+                                    class="btn btn-primary mb-3">Login</button>
+                            </div>
+
+                        </form>
+
+                        <div id="loginResponse" class="alert alert-danger" role="alert" style="display:none">
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        function submitLogin() {
+            const data = {
+                userName: document.getElementById('userName').value,
+                passWord: document.getElementById('passWord').value
+            };
+            // alert(data['userName']);
+            // alert(data['passWord']);
+
+            fetch('authentication.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        window.location.href = "home.php"; // Redirect on success
+                    } else {
+                        document.getElementById('loginResponse').innerText = result.message;
+                        document.getElementById('loginResponse').style.display = "";
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker registered!', reg))
+                    .catch(err => console.log('Service Worker registration failed!', err));
+            });
+        }
+
+    </script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <body>
+
+</html>
